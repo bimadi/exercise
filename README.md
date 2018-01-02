@@ -1,0 +1,2 @@
+# exercise
+repository buat latihan
