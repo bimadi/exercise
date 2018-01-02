@@ -1,2 +1,3 @@
 # exercise
 repository buat latihan
+hai.. hai...
