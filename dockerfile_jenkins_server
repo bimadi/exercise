@@ -1,0 +1,39 @@
+# Set the base image to Fedora v. 21
+FROM fedora:25
+
+# Set the maintainer
+MAINTAINER Christoph Burmeister
+
+# create users in the image
+# Jenkins user is needed for the ssh access
+RUN echo "root:password" | chpasswd
+RUN useradd jenkins
+RUN echo "jenkins:jenkins" | chpasswd
+
+# update the yum
+RUN yum -y update
+
+# install unzip via yum
+RUN yum -y install unzip
+
+# install jdk, as on a clean fedora image, no java is installed
+ADD jdk-8u151-linux-x64.rpm /home/jenkins
+# install java to /usr/java/jdk1.8.0_91/jre/bin/java
+RUN yum -y install /home/jenkins/jdk-8u151-linux-x64.rpm
+# Now JDK was installed at /usr/java/jdk1.8.0_91/ and linked from /usr/bin/java
+RUN java -version
+
+# install jenkins server
+ADD jenkins.war /home/jenkins
+ADD jenkinshome.zip /home/jenkins
+RUN unzip /home/jenkins/jenkinshome.zip -d /home/jenkins/
+RUN chown -R jenkins /home/jenkins/jenkins
+RUN chown -R jenkins /home/jenkins/jenkins.war
+
+# expose the ssh port
+EXPOSE 8080
+
+# entrypoint by starting sshd
+#CMD ["java", "-jar","-DJENKINS_HOME=/home/jenkins/jenkins","jenkins.war"]
+CMD ls -ltr && pwd && cd /home/jenkins && java -jar -DJENKINS_HOME=/home/jenkins/jenkins jenkins.war
+
