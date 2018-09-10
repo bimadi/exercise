@@ -1,4 +1,8 @@
 #!/bin/bash
+##############################
+#This script is created by ab#
+#                            #
+##############################
 echo "Please select by number. "
 echo "1. install docker and kubernetes"
 echo "2. create cluster, install heapster and dashboard"
@@ -57,7 +61,7 @@ elif [ $answer -eq 2 ];then
  echo "Step 1: Start create cluster, install heapster and dashboard"
  echo "Create overlay network"
  kubeadm init --pod-network-cidr 10.244.0.0/16
- echo "USE ABOVE TOKEN TO JOIN MINION INTO THE CLUSTER"
+ echo -e "\n USE ABOVE TOKEN TO JOIN MINION INTO THE CLUSTER"
  mkdir -p $HOME/.kube
  cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
  chown $(id -u):$(id -g) $HOME/.kube/config
@@ -109,6 +113,13 @@ elif [ $answer -eq 2 ];then
  echo "  type: NodePort" >> kubernetes-dashboard.yaml
  kubectl apply -f kubernetes-dashboard.yaml
  rm kubernetes-dashboard.yaml
+ #5
+ echo "Step 5: Create ClusterRole for kubernetes dashboard"
+ kubectl create serviceaccount cluster-admin-dashboard-sa
+ kubectl create clusterrolebinding cluster-admin-dashboard-sa --clusterrole=cluster-admin --serviceaccount=default:cluster-admin-dashboard-sa
+ secret=`kubectl get secret | grep cluster-admin-dashboard-sa|awk '{print $1}'`
+ kubectl describe secret $secret
+ echo -e "\n PLEASE USE ABOVE TOKEN WHILE LOGIN INTO DASHBOARD"
 else
  echo "Please give correct answer."
  exit
