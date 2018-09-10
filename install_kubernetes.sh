@@ -1,5 +1,4 @@
 #!/bin/bash
-#preambule
 echo "Please select by number. "
 echo "1. install docker and kubernetes"
 echo "2. create cluster, install heapster and dashboard"
