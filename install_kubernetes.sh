@@ -1,3 +1,4 @@
+#!/bin/bash
 #preambule
 echo "Please select by number. "
 echo "1. install docker and kubernetes"
